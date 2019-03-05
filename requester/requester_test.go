@@ -33,42 +33,35 @@ func TestN(t *testing.T) {
 	}
 	server := httptest.NewServer(http.HandlerFunc(handler))
 	defer server.Close()
-    //urls := []string{"https://api.dongdakid.com/v2/reservableitems"}
-    //oncework := "classes"
-    //oncework := "teachers"
-    //oncework := "sessioninfos"  //跑了7，8分钟一遍没跑完  跑分页
-	oncework := "sessioninfos?page[number]=1&page[size]=20"   //sessioninfos的分页查询
-	//oncework := "units"     //有问题不稳定
-	//oncework := "students"   //跑了7，8分钟一遍没跑完   跑分页
-	//oncework := "students?page[number]=1&page[size]=20"   //students的分页查询
-	//oncework := "brands"
-	//oncework := "categories"
-	//oncework := "yards"
-	//oncework := "rooms"
-	//oncework := "kids"
-	//oncework := "images"
-	//oncework := "applies"     //跑了7，8分钟一遍没跑完   跑分页
-	//oncework := "applies?page[number]=1&page[size]=20"   //applies的分页查询
-	//oncework := "reservableitems"
-	//oncework := "Catenodes"
-	for i:=0;i<10;i++ {
-		req, _ := http.NewRequest("GET","https://api.dongdakid.com/v2/" + oncework , nil)
-		header := make(http.Header)
-		header.Add("Authorization", "bearer 46fa418a3ec8ec32cd8662a589f3b403")
-		req.Header = header
-		w := &Work{
-			Request: req,
-			N:       200,
-			C:       100,
+	onceworks := []string{
+					"classes",
+					"teachers",
+					"sessioninfos?page[number]=1&page[size]=20","units",
+					"students?page[number]=1&page[size]=20",
+					"brands",
+					"categories",
+					"yards",
+					"rooms",
+					"kids",
+					"images",
+					"applies?page[number]=1&page[size]=20",
+					"reservableitems",
+					"Catenodes",
+					}
+	for _,oncework:=range onceworks {
+		for i := 0; i < 6; i++ {
+			req, _ := http.NewRequest("GET", "https://api.dongdakid.com/v2/"+oncework, nil)
+			header := make(http.Header)
+			header.Add("Authorization", "bearer 46fa418a3ec8ec32cd8662a589f3b403")
+			req.Header = header
+			w := &Work{
+				Request: req,
+				N:       200,
+				C:       100,
+			}
+			w.Run()
+			fmt.Println(oncework, i, "--------------------------------------------------------------------")
 		}
-		w.Run()
-		fmt.Println(i,"--------------------------------------------------------------------")
-		if i==6{
-			fmt.Println(i)
-		}
-	}
-	if count != 20 {
-		t.Errorf("Expected to send 20 requests, found %v", count)
 	}
 }
 
